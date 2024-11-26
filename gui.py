@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem, QVBoxLayout
 from PyQt5.QtWidgets import QWidget, QHeaderView, QCheckBox, QLabel, QPushButton
 import functions
+
 class Checkboxes(QWidget):
     def __init__(self):
         super().__init__()
@@ -23,13 +24,20 @@ class Checkboxes(QWidget):
         self.setLayout(boxlayout)
 
     def submitstatus(self):
+        #status=[] #This list is for returning status of a node as a list
         ApplicationStatus = self.Application.isChecked()
         CoreDumps = self.CoreDumps.isChecked()
         GeniewareLogs = self.GeniewareLogs.isChecked()
         OSLogs = self.OSLogs.isChecked()
         SystemLogs = self.SystemLogs.isChecked()
+        #status.append(ApplicationStatus)
+        #status.append(CoreDumps)
+        #status.append(GeniewareLogs)
+        #status.append(OSLogs)
+        #status.append(SystemLogs)
         #print(ApplicationStatus,CoreDumps,GeniewareLogs,OSLogs,SystemLogs)
         return ApplicationStatus,CoreDumps,GeniewareLogs,OSLogs,SystemLogs
+        #return status
 
 class DateListCB(QWidget):
     def __init__(self,node):
@@ -50,16 +58,27 @@ class DateListCB(QWidget):
 
     def submitstatus(self):
         status = []
-        for i in self.dateslist:
-            print(i)
+        selectedstatus =[]
+        for i in range(len(self.dateslist)):
+            status.append(self.cbs[i].isChecked())
+        #print(status)
+        return status
 
 class Buttons():
     def __init__(self):
         super().__init__()
 
     def Download(self):
-        logs = Checkboxes.submitstatus()
+        print("Hello world")
+        nodes = Table.nodes
+        for i in range(len(Table.nodes)):
+            print("a")
+        #logs = Checkboxes.submitstatus()
         #dates = 
+#for i in range(len(nodes)):
+        #    download.clicked.connect(functions.downloadLog(
+        #types_table[i].submitstatus(),dates_boxes[i].submitstatus(),nodes[i]))
+
 
 #Node listi ayri fonksiyondan alip bu node listteki nodelari tek  tek parametre olarakalip
 #Sonra bunlari checkbox olusturacak fonksiyona gonderip checkboxelari ilgili nodelarda listelemek
@@ -74,9 +93,10 @@ class Table(QWidget):
 
         #Setting Row Names
         nodes = functions.ListNodes()
+        #print(type(nodes))
 
         #Creating array for checkbox status
-        Logs = [] # Application,CoreDumps,Genieware Logs, OS Logs, System Logs
+        #Logs = [] # Application,CoreDumps,Genieware Logs, OS Logs, System Logs
         #Dates = []
 
         #Create a QTableWidget
@@ -91,30 +111,34 @@ class Table(QWidget):
         self.LogCopy.setHorizontalHeaderLabels(['Nodes','Dates','Types'])
 
         #Making CheckBoxes
-
+        #Creating empty lists to which logs for which nodes
+        types_table=[]
         # Creating Log Types Checkboxes
         for row  in range(len(nodes)):
             column=2 #Dates column
-            types_table = Checkboxes() # Types table i types_boxes yap
-            self.LogCopy.setCellWidget(row,column,types_table)
+            types_table.append(Checkboxes())# Types table i types_boxes yap
+            self.LogCopy.setCellWidget(row,column,types_table[row])
             # Connecting the Logs checkboxes
-            types_table.Application.clicked.connect(types_table.submitstatus)
-            types_table.CoreDumps.clicked.connect(types_table.submitstatus)
-            types_table.GeniewareLogs.clicked.connect(types_table.submitstatus)
-            types_table.OSLogs.clicked.connect(types_table.submitstatus)
-            types_table.SystemLogs.clicked.connect(types_table.submitstatus)
+            types_table[row].Application.clicked.connect(types_table[row].submitstatus)
+            types_table[row].CoreDumps.clicked.connect(types_table[row].submitstatus)
+            types_table[row].GeniewareLogs.clicked.connect(types_table[row].submitstatus)
+            types_table[row].OSLogs.clicked.connect(types_table[row].submitstatus)
+            types_table[row].SystemLogs.clicked.connect(types_table[row].submitstatus)
+
+
         #Creating Dates CheckBoxes
+        #Creating empty list to define dates checkboxes for every node
+        dates_boxes=[]
         for row in range(len(nodes)):
             column=1 #Dates column
-            dates_boxes = DateListCB(nodes[row])
+            dates_boxes.append(DateListCB(nodes[row]))
             #print(nodes[row])
-            self.LogCopy.setCellWidget(row,column,dates_boxes)
+            self.LogCopy.setCellWidget(row,column,dates_boxes[row])
             #Connecting the Dates checkboxes
-            for i in range(len(dates_boxes.dateslist)):
-                dates_boxes.cbs[i].clicked.connect(dates_boxes.submitstatus)
-
-        
-        
+            #for i in range(len(dates_boxes[row].dateslist)):
+            #    dates_boxes[row].cbs[i].clicked.connect(dates_boxes[row].submitstatus)
+            #print(f"cbs is: {dates_boxes[row].submitstatus()}")
+        #print(dates_boxes[0].cbs[0].isChecked())
         #Making rows large enough to  fit everything in
         for i in range(len(nodes)):
             self.LogCopy.setRowHeight(i,200)
@@ -123,9 +147,17 @@ class Table(QWidget):
         download = QPushButton('Download',self) #functions
         #sendrepoinf = QPushButton('Send Repo Information',self)
         #sendtomachine = QPushButton('')
+        #Connecting download button to download function
 
-        #download.clicked.connect("give the class and function here")
-
+        #download.clicked.connect(self.Download)
+        #for i in range(len(nodes)):
+            #print(nodes[i])
+            #download.clicked.connect(lambda i=i: functions.downloadLog(types_table[i].submitstatus(),dates_boxes[i].submitstatus(),nodes[i]))
+            #for k in range(3):
+            #    print(i,k, types_table[i].submitstatus()[k])
+            #print(type())
+        #print (type(types_table[0].submitstatus()))
+        #print(nodes[0])
         #Testing part
         #print(Checkboxes().submitstatus())
          
@@ -135,6 +167,12 @@ class Table(QWidget):
         layout.addWidget(self.LogCopy)
         layout.addWidget(download)
         self.setLayout(layout)
+
+    def Download(self,types_table,dates_boxes,nodes):
+        logs = [][5]
+        for i in range(len(nodes)):
+            logs.append(types_table[i].submitstatus())
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
