@@ -24,18 +24,11 @@ class Checkboxes(QWidget):
         self.setLayout(boxlayout)
 
     def submitstatus(self):
-        #status=[] #This list is for returning status of a node as a list
         ApplicationStatus = self.Application.isChecked()
         CoreDumps = self.CoreDumps.isChecked()
         GeniewareLogs = self.GeniewareLogs.isChecked()
         OSLogs = self.OSLogs.isChecked()
         SystemLogs = self.SystemLogs.isChecked()
-        #status.append(ApplicationStatus)
-        #status.append(CoreDumps)
-        #status.append(GeniewareLogs)
-        #status.append(OSLogs)
-        #status.append(SystemLogs)
-        #print(ApplicationStatus,CoreDumps,GeniewareLogs,OSLogs,SystemLogs)
         return ApplicationStatus,CoreDumps,GeniewareLogs,OSLogs,SystemLogs
         #return status
 
@@ -149,7 +142,7 @@ class Table(QWidget):
         #sendtomachine = QPushButton('')
         #Connecting download button to download function
 
-        #download.clicked.connect(self.Download)
+        download.clicked.connect(lambda: self.Download(types_table,dates_boxes,nodes))
         #for i in range(len(nodes)):
             #print(nodes[i])
             #download.clicked.connect(lambda i=i: functions.downloadLog(types_table[i].submitstatus(),dates_boxes[i].submitstatus(),nodes[i]))
@@ -169,9 +162,11 @@ class Table(QWidget):
         self.setLayout(layout)
 
     def Download(self,types_table,dates_boxes,nodes):
-        logs = [][5]
+        print(dates_boxes[0].dateslist)
         for i in range(len(nodes)):
-            logs.append(types_table[i].submitstatus())
+            functions.downloadLog(types_table[i].submitstatus(),dates_boxes[i].submitstatus(),nodes[i])
+        #for i in range(len(nodes)):
+        #    logs.append(lambda: types_table[i].submitstatus())
 
 
 if __name__ == '__main__':
