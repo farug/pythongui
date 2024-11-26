@@ -162,7 +162,7 @@ class Table(QWidget):
         self.setLayout(layout)
 
     def Download(self,types_table,dates_boxes,nodes):
-        print(dates_boxes[0].dateslist)
+        #print(dates_boxes[0].dateslist)
         for i in range(len(nodes)):
             functions.downloadLog(types_table[i].submitstatus(),dates_boxes[i].submitstatus(),nodes[i])
         #for i in range(len(nodes)):
