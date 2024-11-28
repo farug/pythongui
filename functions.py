@@ -44,9 +44,11 @@ def downloadLog(log,dates_status,dates,node):
         #for i in range(len(valid_dates)):
         #    download_directory_via_scp(node,f"/mnt/c/Users/omer/Desktop/Havelsan/Qt/pythongui/logstest/{node}/")
         for i in range(len(valid_dates)):
-            download_directory_via_scp(node,f"/home/ofsert/Desktop/git/pythongui/PySub/logsTest/{node}/",valid_dates[i])
+            download_directory_via_scp(node,f"/home/ofsert/Desktop/git/pythongui/PySub/logsTest/{node}/application_logs",valid_dates[i])
     if log[1] == True: #Core Dumps
         print(f"CoreDumps {node}")
+        for i in range(len(valid_dates)):
+            download_directory_via_scp(node,f"/home/ofsert/Desktop/git/pythongui/PySub/logsTest/{node}/",valid_dates[i])
         #Core dumps install subprocess
     if log[2] == True: #Genieware Logs
         print(f"Genieware Logs {node}")
