@@ -143,6 +143,8 @@ class UserCredentials(QDialog):
 
     def empty(self):
         print("empty")
+        #username = username_input.text()
+        password = password_input.text()
 
 class Buttons():
     def __init__(self):
