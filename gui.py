@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem, QVBoxLayout
 from PyQt5.QtWidgets import QWidget, QHeaderView, QCheckBox, QLabel, QPushButton
+from PyQt5.QtWidgets import QLineEdit, QDialog
 import functions
 
 class Checkboxes(QWidget):
@@ -56,6 +57,92 @@ class DateListCB(QWidget):
             status.append(self.cbs[i].isChecked())
         #print(status)
         return status
+
+class UserCredentials(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+
+        self.setWindowTitle('Login Window')
+
+        self.setGeometry(100, 100, 300, 250)
+
+
+
+        # Create layout
+
+        loginLayout = QVBoxLayout()
+
+
+
+        # Username field
+
+        self.username_label = QLabel('Username:')
+
+        self.username_input = QLineEdit()
+
+        loginLayout.addWidget(self.username_label)
+
+        loginLayout.addWidget(self.username_input)
+
+
+
+        # Password field
+
+        self.password_label = QLabel('Password:')
+
+        self.password_input = QLineEdit()
+
+        self.password_input.setEchoMode(QLineEdit.Password)  # Hide password input
+
+        loginLayout.addWidget(self.password_label)
+
+        loginLayout.addWidget(self.password_input)
+
+
+
+        # Hostname field
+
+        #self.hostname_label = QLabel('Hostname:')
+
+        #self.hostname_input = QLineEdit()
+
+        #loginLayout.addWidget(self.hostname_label)
+
+        #loginLayout.addWidget(self.hostname_input)
+
+
+
+        # Login button
+
+        self.login_button = QPushButton('Login')
+
+        #self.login_button.clicked.connect(self.handle_send) # This will be send button and send handle
+
+        self.login_button.clicked.connect(self.empty)
+
+        loginLayout.addWidget(self.login_button)
+
+
+
+        # Cancel button
+
+        self.cancel_button = QPushButton('Cancel')
+
+        self.cancel_button.clicked.connect(self.close)  # Close the window
+
+        loginLayout.addWidget(self.cancel_button)
+
+
+
+        # Set the layout for the window
+
+        self.setLayout(loginLayout)
+
+    def empty(self):
+        print("empty")
 
 class Buttons():
     def __init__(self):
@@ -137,12 +224,16 @@ class Table(QWidget):
             self.LogCopy.setRowHeight(i,200)
         self.LogCopy.setColumnWidth(2,270)
 
-        download = QPushButton('Download',self) #functions
+        download = QPushButton('Download',self) #Download Button #functions
+        upload = QPushButton('Upload',self) # Upload Button
         #sendrepoinf = QPushButton('Send Repo Information',self)
         #sendtomachine = QPushButton('')
         #Connecting download button to download function
 
         download.clicked.connect(lambda: self.Download(types_table,dates_boxes,nodes))
+        
+        #Connecting upload button to upload function
+        upload.clicked.connect(lambda: self.Upload())
         #for i in range(len(nodes)):
             #print(nodes[i])
             #download.clicked.connect(lambda i=i: functions.downloadLog(types_table[i].submitstatus(),dates_boxes[i].submitstatus(),nodes[i]))
@@ -159,6 +250,7 @@ class Table(QWidget):
         layout = QVBoxLayout()    
         layout.addWidget(self.LogCopy)
         layout.addWidget(download)
+        layout.addWidget(upload)
         self.setLayout(layout)
 
     def Download(self,types_table,dates_boxes,nodes):
@@ -167,6 +259,12 @@ class Table(QWidget):
             functions.downloadLog(types_table[i].submitstatus(),dates_boxes[i].submitstatus(),dates_boxes[i].dateslist,nodes[i])
         #for i in range(len(nodes)):
         #    logs.append(lambda: types_table[i].submitstatus())
+    def Upload(self):
+        #loginwindow =  UserCredentials.initUI()
+        loginwindow = UserCredentials()
+        loginwindow.resize(100,100)
+        loginwindow.exec_()
+        #print("Uploaded   Test")
 
 
 if __name__ == '__main__':
