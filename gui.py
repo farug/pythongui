@@ -121,7 +121,8 @@ class UserCredentials(QDialog):
 
         #self.login_button.clicked.connect(self.handle_send) # This will be send button and send handle
 
-        self.login_button.clicked.connect(self.empty)
+        resulttest = self.login_button.clicked.connect(self.empty)
+        print(resulttest)
 
         loginLayout.addWidget(self.login_button)
 
@@ -142,9 +143,12 @@ class UserCredentials(QDialog):
         self.setLayout(loginLayout)
 
     def empty(self):
-        print("empty")
-        #username = username_input.text()
-        password = password_input.text()
+        #print("empty")
+        username = self.username_input.text()
+        password = self.password_input.text()
+        #return username,password
+        print(username)
+        print(password)
 
 class Buttons():
     def __init__(self):
