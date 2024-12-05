@@ -33,7 +33,8 @@ if __name__ == "__main__":
 # there will be 2d array for 
 #dates is an array (dates)
 def downloadLog(log,dates_status,dates,node):
-    print(type(dates))
+    #print(type(dates))
+    print(log)
     valid_dates=ret_valid_date(dates_status,dates)
     #print(valid_dates)
     if log[0] == True: # Application Logs
@@ -44,20 +45,27 @@ def downloadLog(log,dates_status,dates,node):
         #for i in range(len(valid_dates)):
         #    download_directory_via_scp(node,f"/mnt/c/Users/omer/Desktop/Havelsan/Qt/pythongui/logstest/{node}/")
         for i in range(len(valid_dates)):
-            download_directory_via_scp(node,f"/home/ofsert/Desktop/git/pythongui/PySub/logsTest/{node}/application_logs",valid_dates[i])
+            download_directory_via_scp(node,f"/home/ofsert/Desktop/git/pythongui/PySub/logsTest/{node}/application_logs",valid_dates[i],"application_logs")
     if log[1] == True: #Core Dumps
         print(f"CoreDumps {node}")
         for i in range(len(valid_dates)):
-            download_directory_via_scp(node,f"/home/ofsert/Desktop/git/pythongui/PySub/logsTest/{node}/",valid_dates[i])
+            download_directory_via_scp(node,f"/home/ofsert/Desktop/git/pythongui/PySub/logsTest/{node}/",valid_dates[i],"core_dumps")
         #Core dumps install subprocess
     if log[2] == True: #Genieware Logs
         print(f"Genieware Logs {node}")
+        for i in range(len(valid_dates)):
+            download_directory_via_scp(node,f"/home/ofsert/Desktop/git/pythongui/PySub/logsTest/{node}/",valid_dates[i],"genieware_logs")
         # Genieware log install subprocess
     if log[3] == True: #OS Logs
         print(f"OS Logs {node}")
+        for i in range(len(valid_dates)):
+            download_directory_via_scp(node,f"/home/ofsert/Desktop/git/pythongui/PySub/logsTest/{node}/",valid_dates[i],"os_logs")
         #OS Logs install subprocess
     if log[4] == True: #System Logs
         print(f"System Logs {node}")
+        for i in range(len(valid_dates)):
+            download_directory_via_scp(node,f"/home/ofsert/Desktop/git/pythongui/PySub/logsTest/{node}/",valid_dates[i],"system_logs")
+
         #System Logs install subprocess
     #else:
     #    print(f"Nothing chosen {node}")
@@ -116,20 +124,21 @@ def install_file_via_scp(target_node, target_path):
         print(f"An error occurred: {e}")
 
 # Function to download a directory using scp
-def download_directory_via_scp(target_node, source_path,date):
+def download_directory_via_scp(target_node, source_path,date,type):
     #local_destination = "/home/aa/."
-    local_destination="/home/ofsert/."
+    local_destination="/home/ofsert/LogCollectorTest/download"
     # Define the scp command for downloading
     #scp_command = [f"scp -r 127.0.0.1:{source_path} {local_destination}"]  # Added -r for recursive #127.0.0.1 is the local machine it wll change to target_node
     ls_command = [f"ls /home/ofsert/Desktop/git/pythongui/PySub/logsTest/{target_node}/. | grep {date}"]
     filen = subprocess.run(ls_command, capture_output = True, text=True, check=True, shell=True)
     print(filen.stdout)
-    download_file_name=filen.stdout.splitlines()[0]
+    download_file_date=filen.stdout.splitlines()[0]
+    #print(download_file_name)
     #tar_command = [f"ssh 127.0.0.1 'tar -C {source_path} -cvzf /var/tmp/{date}.tar {date}*'"]
-    scp_command = [f"scp -r 127.0.0.1:/home/ofsert/Desktop/git/pythongui/PySub/logsTest/{target_node}/{download_file_name} {local_destination}"]
+    scp_command = [f"scp -r 127.0.0.1:/home/ofsert/Desktop/git/pythongui/PySub/logsTest/{target_node}/{download_file_date}/{type} {local_destination}/{download_file_date}_{type}"]
     try:
         # Execute the scp command using subprocess
-        
+        print(scp_command)
         result = subprocess.run(scp_command, capture_output=True ,shell=True,text=True, check=True)
 
         # Print the output of the command
@@ -154,3 +163,14 @@ def ret_valid_date(datesStatus,dates):
         if datesStatus[i] == True:
             valid_dates.append(dates[i])
     return valid_dates 
+
+def upload_directory_via_scp(hostname,username,password):
+    #print("i am here")
+    upload_dir="/home/ofsert/LogCollectorTest/upload/"
+    scp_command = [f"scp -r /home/ofsert/LogCollectorTest/download {username}@{hostname}:"]
+
+    try:
+        result = subprocess.run(scp_command, capture_output=True ,shell=True,text=True, check=True)
+
+    except subprocess.CalledProcessError as e:
+        print(f"An error occured {e}")

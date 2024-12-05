@@ -105,13 +105,13 @@ class UserCredentials(QDialog):
 
         # Hostname field
 
-        #self.hostname_label = QLabel('Hostname:')
+        self.hostname_label = QLabel('Hostname or IP:')
 
-        #self.hostname_input = QLineEdit()
+        self.hostname_input = QLineEdit()
 
-        #loginLayout.addWidget(self.hostname_label)
+        loginLayout.addWidget(self.hostname_label)
 
-        #loginLayout.addWidget(self.hostname_input)
+        loginLayout.addWidget(self.hostname_input)
 
 
 
@@ -121,7 +121,7 @@ class UserCredentials(QDialog):
 
         #self.login_button.clicked.connect(self.handle_send) # This will be send button and send handle
 
-        resulttest = self.login_button.clicked.connect(self.empty)
+        resulttest = self.login_button.clicked.connect(lambda: functions.upload_directory_via_scp(self.hostname_input.text(), self.username_input.text(),self.password_input.text()))
         print(resulttest)
 
         loginLayout.addWidget(self.login_button)
@@ -142,13 +142,15 @@ class UserCredentials(QDialog):
 
         self.setLayout(loginLayout)
 
-    def empty(self):
+    """def empty(self):
         #print("empty")
         username = self.username_input.text()
         password = self.password_input.text()
+        hostname = self.hostname_input.text()
         #return username,password
         print(username)
         print(password)
+        print(hostname)"""
 
 class Buttons():
     def __init__(self):
