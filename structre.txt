@@ -1,0 +1,7 @@
+logs for all nodes
+/opt/advent/local_logs
+
+repoinfo
+/opt/advent/repos/target/operational
+
+target and operational are soft links

@@ -1,4 +1,5 @@
 import subprocess
+import gui
 
 """
 def ssh_command(server, username, command):
@@ -127,6 +128,7 @@ def install_file_via_scp(target_node, target_path):
 def download_directory_via_scp(target_node, source_path,date,type):
     #local_destination = "/home/aa/."
     local_destination="/home/ofsert/LogCollectorTest/download"
+    print(f"targe node is: {target_node}")
     # Define the scp command for downloading
     #scp_command = [f"scp -r 127.0.0.1:{source_path} {local_destination}"]  # Added -r for recursive #127.0.0.1 is the local machine it wll change to target_node
     ls_command = [f"ls /home/ofsert/Desktop/git/pythongui/PySub/logsTest/{target_node}/. | grep {date}"]
@@ -135,7 +137,7 @@ def download_directory_via_scp(target_node, source_path,date,type):
     download_file_date=filen.stdout.splitlines()[0]
     #print(download_file_name)
     #tar_command = [f"ssh 127.0.0.1 'tar -C {source_path} -cvzf /var/tmp/{date}.tar {date}*'"]
-    scp_command = [f"scp -r 127.0.0.1:/home/ofsert/Desktop/git/pythongui/PySub/logsTest/{target_node}/{download_file_date}/{type} {local_destination}/{download_file_date}_{type}"]
+    scp_command = [f"scp -r 127.0.0.1:/home/ofsert/Desktop/git/pythongui/PySub/logsTest/{target_node}/{download_file_date}/{type} {local_destination}/{download_file_date}_{target_node}_{type}"]
     try:
         # Execute the scp command using subprocess
         print(scp_command)
@@ -165,12 +167,29 @@ def ret_valid_date(datesStatus,dates):
     return valid_dates 
 
 def upload_directory_via_scp(hostname,username,password):
-    #print("i am here")
     upload_dir="/home/ofsert/LogCollectorTest/upload/"
-    scp_command = [f"scp -r /home/ofsert/LogCollectorTest/download {username}@{hostname}:"]
+    scp_command = [f"sshpass -p {password} scp -r /home/ofsert/LogCollectorTest/download/* {username}@{hostname}:{upload_dir}"]
 
     try:
         result = subprocess.run(scp_command, capture_output=True ,shell=True,text=True, check=True)
 
+    except subprocess.CalledProcessError as e:
+        print(f"An error occured {e}")
+
+def send_repo_info(hostname,username,password):
+    repoInfoFilePath="/home/ofsert/Desktop/git/pythongui/PySub/logsTest/gsu/repo_information"
+    scp_command = [f"sshpass -p {password}  scp -r {repoInfoFilePath} {username}@{hostname}:"]
+
+    try:
+        result = subprocess.run(scp_command, capture_output=True ,text=True ,shell=True)
+        #if there is error then give an error gui
+        #print("return code:",result.returncode)
+        if result.returncode != 0:
+            print("I am  here")
+            error = gui.ErrorPage()
+            error.resize(100,100)
+            error.exec_()
+
+    
     except subprocess.CalledProcessError as e:
         print(f"An error occured {e}")
