@@ -185,7 +185,7 @@ def send_repo_info(hostname,username,password):
         #if there is error then give an error gui
         #print("return code:",result.returncode)
         if result.returncode != 0:
-            print("I am  here")
+            #print("I am  here")
             error = gui.ErrorPage()
             error.resize(100,100)
             error.exec_()
